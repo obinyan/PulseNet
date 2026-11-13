@@ -6,7 +6,7 @@ export function PasswordInput({ name, placeholder }: { name: string; placeholder
   const [show, setShow] = useState(false);
   return (
     <div className="pw">
-      <input name={name} type={show ? "text" : "password"} placeholder={placeholder} required minLength={8} />
+      <input name={name} type={show ? "text" : "password"} placeholder={placeholder} />
       <button type="button" aria-label={show ? "Hide password" : "Show password"} onClick={() => setShow(!show)}><Icon name="eye" /></button>
     </div>
   );

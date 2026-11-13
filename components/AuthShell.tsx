@@ -5,7 +5,7 @@ export function Field({ label, type = "text", placeholder = "", name, password =
   return (
     <label className="field">
       <span>{label}</span>
-      {password ? <PasswordInput name={name} placeholder={placeholder} /> : <input name={name} type={type} placeholder={placeholder} required />}
+      {password ? <PasswordInput name={name} placeholder={placeholder} /> : <input name={name} type={type} placeholder={placeholder} />}
     </label>
   );
 }
@@ -19,7 +19,8 @@ export function AuthShell({ variant, children }: { variant: "login" | "signup"; 
       <div className="orb" style={{ width: 420, height: 420, [login ? "left" : "right"]: -100, top: -110, background: login ? "#8ea0ff" : "#6a82ff", opacity: 0.8 }} />
       <div className="auth">
         <div className="auth-left">
-          <Link href="/" className="wm" style={{ textDecoration: "none" }}>PulseNet</Link>
+          <Link href="/login" className="wm wm-desktop" style={{ textDecoration: "none" }}>PulseNet</Link>
+          <div className="auth-logo"><PulseIcon size={44} /><span className="wm">PulseNet</span></div>
           <div className="auth-icon"><PulseIcon /></div>
           <div className="auth-copy">
             <h1>Run your hotspot business<br />from one place.</h1>
