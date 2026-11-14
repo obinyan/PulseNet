@@ -6,6 +6,14 @@ import { Card } from "@/components/Cards";
 import { Empty, FormField, PageHead } from "@/components/ui";
 import { useStore, type Member, type Profile } from "@/lib/store";
 import { SETTINGS_SECTIONS } from "@/lib/settings-sections";
+import { Branding } from "./sections/Branding";
+import { Notifications } from "./sections/Notifications";
+import { Gateway } from "./sections/Gateway";
+import { RouterDefaults } from "./sections/RouterDefaults";
+import { VoucherFormat } from "./sections/VoucherFormat";
+import { Billing } from "./sections/Billing";
+import { Security } from "./sections/Security";
+import { DataExport } from "./sections/Export";
 
 const COUNTRIES = ["Nigeria", "Ghana", "Kenya", "South Africa", "Other"];
 const CURRENCIES = ["NGN", "GHS", "KES", "ZAR", "USD"];
@@ -97,7 +105,14 @@ export default function SettingsView() {
         <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
           {cur.slug === "business" && <BusinessProfile />}
           {cur.slug === "staff" && <Staff />}
-          {cur.slug !== "business" && cur.slug !== "staff" && <Card title={cur.label}><Empty>This section has not been built yet.</Empty></Card>}
+          {cur.slug === "branding" && <Branding />}
+          {cur.slug === "notifications" && <Notifications />}
+          {cur.slug === "gateway" && <Gateway />}
+          {cur.slug === "router-defaults" && <RouterDefaults />}
+          {cur.slug === "voucher-format" && <VoucherFormat />}
+          {cur.slug === "billing" && <Billing />}
+          {cur.slug === "security" && <Security />}
+          {cur.slug === "export" && <DataExport />}
         </div>
       </div>
     </>

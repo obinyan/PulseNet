@@ -23,3 +23,9 @@ export const Empty = ({ children }: { children: React.ReactNode }) => <p classNa
 export function FormField({ label, children }: { label: string; children: React.ReactNode }) {
   return <label style={{ display: "block" }}><span className="lb">{label}</span>{children}</label>;
 }
+export function Switch({ on, onChange, label, disabled }: { on: boolean; onChange: (v: boolean) => void; label: string; disabled?: boolean }) {
+  return <button type="button" className="sw" role="switch" aria-checked={on} aria-label={label} disabled={disabled} onClick={() => onChange(!on)}><i /></button>;
+}
+export function ToggleRow({ title, hint, on, onChange, disabled }: { title: string; hint?: string; on: boolean; onChange: (v: boolean) => void; disabled?: boolean }) {
+  return <div className="trow"><div><b style={{ fontSize: 14 }}>{title}</b>{hint && <small>{hint}</small>}</div><Switch on={on} onChange={onChange} label={title} disabled={disabled} /></div>;
+}

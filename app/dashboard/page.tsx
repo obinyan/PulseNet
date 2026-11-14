@@ -4,7 +4,7 @@ import { Card, Item, Stat } from "@/components/Cards";
 import { BarChart } from "@/components/BarChart";
 import { buckets } from "@/lib/dates";
 import { Empty } from "@/components/ui";
-import { useStore } from "@/lib/store";
+import { effStatus, useStore } from "@/lib/store";
 import { dur, money } from "@/lib/format";
 import Link from "next/link";
 
@@ -14,7 +14,7 @@ export default function Overview() {
   const week = (ready ? buckets("7 days") : []).map((b) => ({ label: b.label, value: payments.filter((p) => p.status === "successful" && p.createdAt >= b.start && p.createdAt < b.end).reduce((n, p) => n + p.amount, 0) }));
   const today = payments.filter((p) => p.status === "successful" && p.createdAt >= new Date().setHours(0, 0, 0, 0)).reduce((n, p) => n + p.amount, 0);
   const online = routers.filter((r) => r.status === "online").length;
-  const unused = vouchers.filter((v) => v.status === "unused").length;
+  const unused = vouchers.filter((v) => effStatus(v) === "unused").length;
   const sold = vouchers.filter((v) => v.status === "used").length;
   return (
     <>

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Card, Stat } from "@/components/Cards";
 import { Chips, Empty, FormField, PageHead } from "@/components/ui";
-import { useStore, type Batch, type VStatus } from "@/lib/store";
+import { effStatus, useStore, type Batch, type VStatus } from "@/lib/store";
 import { day } from "@/lib/format";
 
 const FILTERS = ["All", "Unused", "Active", "Used", "Expired", "Disabled"] as const;
@@ -21,8 +21,8 @@ export default function VouchersPage() {
   const [q, setQ] = useState("");
 
   const planName = (id: string) => plans.find((p) => p.id === id)?.name ?? "Deleted plan";
-  const count = (s: VStatus) => vouchers.filter((v) => v.status === s).length;
-  const list = useMemo(() => vouchers.filter((v) => (filter === "All" || v.status === filter.toLowerCase()) && v.code.toLowerCase().includes(q.toLowerCase())), [vouchers, filter, q]);
+  const count = (s: VStatus) => vouchers.filter((v) => effStatus(v) === s).length;
+  const list = useMemo(() => vouchers.filter((v) => (filter === "All" || effStatus(v) === filter.toLowerCase()) && v.code.toLowerCase().includes(q.toLowerCase())), [vouchers, filter, q]);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault(); setDone("");
@@ -99,7 +99,7 @@ export default function VouchersPage() {
           {list.slice(0, 200).map((v) => (
             <div className="tb" key={v.code} style={{ gridTemplateColumns: vc }}>
               <div><b>{v.code}</b></div><div>{planName(v.planId)}</div>
-              <div><span className="pill">{v.status[0].toUpperCase() + v.status.slice(1)}</span></div><div>{day(v.createdAt)}</div>
+              <div><span className="pill">{effStatus(v)[0].toUpperCase() + effStatus(v).slice(1)}</span></div><div>{day(v.createdAt)}</div>
               <div>{v.status === "disabled" ? <button className="linkbtn" onClick={() => setVoucherStatus(v.code, "unused")}>Enable</button> : <button className="linkbtn" onClick={() => setVoucherStatus(v.code, "disabled")}>Disable</button>}</div>
             </div>
           ))}

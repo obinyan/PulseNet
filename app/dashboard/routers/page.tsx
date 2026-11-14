@@ -8,7 +8,7 @@ import { when } from "@/lib/format";
 const FILTERS = ["All", "Online", "Offline"] as const;
 
 export default function RoutersPage() {
-  const { routers, addRouter, removeRouter } = useStore();
+  const { routers, addRouter, removeRouter, settings } = useStore();
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
   const [q, setQ] = useState("");
   const [name, setName] = useState("");
@@ -33,7 +33,7 @@ export default function RoutersPage() {
   };
   const copy = async () => {
     if (!current) return;
-    try { await navigator.clipboard.writeText(routerScript(current)); setCopied(true); } catch { setCopied(false); }
+    try { await navigator.clipboard.writeText(routerScript(current, settings.routerDefaults)); setCopied(true); } catch { setCopied(false); }
   };
 
   return (
@@ -78,8 +78,9 @@ export default function RoutersPage() {
             {current && (
               <div className="fcol" style={{ marginTop: 16 }}>
                 <b style={{ fontSize: 14 }}>Setup script for {current.name}</b>
-                <pre className="code">{routerScript(current)}</pre>
+                <pre className="code">{routerScript(current, settings.routerDefaults)}</pre>
                 {RADIUS_HOST === "YOUR_SERVER_IP" && <p className="muted" style={{ fontSize: 12, margin: 0 }}>Set NEXT_PUBLIC_RADIUS_HOST in .env.local to your RADIUS server address.</p>}
+                <p className="muted" style={{ fontSize: 12, margin: 0 }}>Review before applying. Commands can differ between RouterOS versions.</p>
                 <button className="btn ghost" onClick={copy}>{copied ? "Copied" : "Copy script"}</button>
               </div>
             )}
