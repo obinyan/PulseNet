@@ -1,15 +1,18 @@
 "use client";
 import { Icon } from "@/components/icons";
-import { BarChart, Card, Item, Stat } from "@/components/Cards";
+import { Card, Item, Stat } from "@/components/Cards";
+import { BarChart } from "@/components/BarChart";
+import { buckets } from "@/lib/dates";
 import { Empty } from "@/components/ui";
 import { useStore } from "@/lib/store";
 import { dur, money } from "@/lib/format";
 import Link from "next/link";
 
-const week = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => ({ day, value: 0 }));
 
 export default function Overview() {
-  const { routers, plans, vouchers, batches, sessions } = useStore();
+  const { ready, routers, plans, vouchers, batches, sessions, payments } = useStore();
+  const week = (ready ? buckets("7 days") : []).map((b) => ({ label: b.label, value: payments.filter((p) => p.status === "successful" && p.createdAt >= b.start && p.createdAt < b.end).reduce((n, p) => n + p.amount, 0) }));
+  const today = payments.filter((p) => p.status === "successful" && p.createdAt >= new Date().setHours(0, 0, 0, 0)).reduce((n, p) => n + p.amount, 0);
   const online = routers.filter((r) => r.status === "online").length;
   const unused = vouchers.filter((v) => v.status === "unused").length;
   const sold = vouchers.filter((v) => v.status === "used").length;
@@ -23,13 +26,13 @@ export default function Overview() {
         </div>
       </div>
       <div className="grid g4 stats">
-        <Stat label="Revenue today" value={money(0)} note="No sales yet" />
+        <Stat label="Revenue today" value={money(today)} note={today ? "Paid today" : "No sales yet"} />
         <Stat label="Active users" value={String(sessions.length)} note="Connected now" />
         <Stat label="Vouchers sold" value={String(sold)} note={`${unused} unused in stock`} />
         <Stat label="Routers online" value={`${online} / ${routers.length}`} note={routers.length - online === 0 ? "All routers online" : `${routers.length - online} offline`} />
       </div>
       <div className="grid g21 cards">
-        <Card title="Revenue, last 7 days" className="o-chart"><BarChart data={week} /></Card>
+        <Card title="Revenue, last 7 days" className="o-chart">{ready ? <BarChart data={week} format={money} tick={(n) => (n >= 1000 ? `₦${+(n / 1000).toFixed(1)}k` : `₦${n}`)} height={260} label="Revenue, last 7 days" emptyText="No revenue recorded yet" /> : <div style={{ height: 260 }} />}</Card>
         <Card title="Routers" href="/dashboard/routers" className="o-routers">
           {routers.slice(0, 3).map((r) => <Item key={r.id} title={r.name} sub={r.site || r.brand} tag={r.status === "online" ? "Online" : "Offline"} />)}
           {routers.length === 0 && <Empty>No routers yet</Empty>}

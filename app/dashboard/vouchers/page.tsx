@@ -56,22 +56,24 @@ export default function VouchersPage() {
         <Stat label="Used" value={String(count("used"))} note="redeemed" />
         <Stat label="Disabled or expired" value={String(count("disabled") + count("expired"))} note="" />
       </div>
-      <div className="grid g3 stack" style={{ gridTemplateColumns: "1fr 2fr", alignItems: "start" }}>
+      <div className="fcol" style={{ gap: 16 }}>
         <div id="generate"><Card title="Generate a batch">
           <form className="fcol" onSubmit={submit}>
+            <div className="fgrid">
             <FormField label="Plan">
               <select className="fi" value={planId} onChange={(e) => setPlanId(e.target.value)}>
                 <option value="">{plans.length ? "Choose a plan" : "No plans yet"}</option>
                 {plans.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>
             </FormField>
-            {plans.length === 0 && <p className="muted" style={{ margin: 0, fontSize: 13 }}><Link href="/dashboard/plans" style={{ textDecoration: "underline" }}>Create a plan</Link> first.</p>}
             <FormField label="Quantity (1 to 500)"><input className="fi" type="number" min="1" max="500" value={qty} onChange={(e) => setQty(e.target.value)} /></FormField>
             <FormField label="Code prefix (optional, up to 4 characters)"><input className="fi" maxLength={4} value={prefix} onChange={(e) => setPrefix(e.target.value)} /></FormField>
             <FormField label="Batch name (optional)"><input className="fi" value={name} onChange={(e) => setName(e.target.value)} /></FormField>
+            </div>
+            {plans.length === 0 && <p className="muted" style={{ margin: 0, fontSize: 13 }}><Link href="/dashboard/plans" style={{ textDecoration: "underline" }}>Create a plan</Link> first.</p>}
             {error && <p className="err" role="alert">{error}</p>}
             {done && <p style={{ margin: 0, fontSize: 13 }} role="status">{done}</p>}
-            <button className="btn" type="submit">Generate vouchers</button>
+            <button className="btn inline" type="submit">Generate vouchers</button>
           </form>
         </Card></div>
         <Card title="Batches">

@@ -3,7 +3,7 @@ import { Icon } from "./icons";
 
 export function PageHead({ title, sub, action }: { title: string; sub: string; action?: React.ReactNode }) {
   return (
-    <div className="row">
+    <div className="row page-head">
       <div><h1>{title}</h1><div className="muted" style={{ fontSize: 14, marginTop: 4 }}>{sub}</div></div>
       <div className="row">
         <button className="iconbtn desk-only" aria-label="Notifications"><Icon name="bell" /></button>

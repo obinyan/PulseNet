@@ -4,7 +4,8 @@ import type { Batch, Plan, Router, Voucher } from "./store";
 export type SearchEntry = { title: string; group: string; href: string; hint?: string };
 
 const pages: SearchEntry[] = [...MAIN_NAV, ...MANAGE_NAV, SETTINGS_NAV].map((n) => ({ title: n.label, group: "Page", href: n.href, hint: "Go to page" }));
-const settings: SearchEntry[] = ["Business profile", "Branding and logo", "Staff and roles", "Notifications", "Billing and subscription", "Password and security", "Payment gateway", "Router defaults", "Voucher code format", "Data export"].map((t) => ({ title: t, group: "Settings", href: SETTINGS_NAV.href, hint: "Settings" }));
+import { SETTINGS_SECTIONS } from "./settings-sections";
+const settings: SearchEntry[] = SETTINGS_SECTIONS.map((x) => ({ title: x.label, group: "Settings", href: `${SETTINGS_NAV.href}?s=${x.slug}`, hint: "Settings" }));
 
 export function buildIndex(d: { routers: Router[]; plans: Plan[]; vouchers: Voucher[]; batches: Batch[] }): SearchEntry[] {
   return [
