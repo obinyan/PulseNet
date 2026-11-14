@@ -56,7 +56,7 @@ export default function CustomersPage() {
                 <button className="btn ghost" disabled style={{ opacity: 0.6 }} title="Available once routers are connected">Block</button>
               </div>
             </>
-          ) : <Empty>Select a customer to see their details</Empty>}
+          ) : <Empty>Select a customer to see their details.</Empty>}
         </Card>
       </div>
     </>

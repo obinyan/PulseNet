@@ -1,19 +1,8 @@
 import { notFound } from "next/navigation";
-import { SECTIONS } from "@/lib/nav";
 
-const BUILT = ["routers", "plans", "vouchers", "sessions"];
-
-export function generateStaticParams() {
-  return SECTIONS.map((s) => s.href.split("/").pop()!).filter((x) => !BUILT.includes(x)).map((section) => ({ section }));
-}
-
-export default function SectionPage({ params }: { params: { section: string } }) {
-  const s = SECTIONS.find((x) => x.href.endsWith(`/${params.section}`));
-  if (!s) notFound();
-  return (
-    <>
-      <h1>{s.label}</h1>
-      <div className="glass"><p className="muted" style={{ margin: 0 }}>The {s.label} page will be built here.</p></div>
-    </>
-  );
-}
+// Safety net. This folder once held placeholder pages. Every section now has its own page,
+// so this route renders nothing. It is kept so that an old copy of this file gets overwritten
+// when a new zip is extracted over an old project.
+export const dynamicParams = false;
+export function generateStaticParams() { return []; }
+export default function Unused() { notFound(); }
