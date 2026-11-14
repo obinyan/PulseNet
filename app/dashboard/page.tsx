@@ -1,48 +1,58 @@
+"use client";
 import { Icon } from "@/components/icons";
 import { BarChart, Card, Item, Stat } from "@/components/Cards";
+import { Empty } from "@/components/ui";
+import { useStore } from "@/lib/store";
+import { dur, money } from "@/lib/format";
+import Link from "next/link";
 
-// Sample data only. Replace with real queries once the API exists.
-const revenue = [["Mon", 70], ["Tue", 95], ["Wed", 60], ["Thu", 120], ["Fri", 100], ["Sat", 140], ["Sun", 85]].map(([day, value]) => ({ day: day as string, value: value as number }));
-const sessions = [["K7P4-XM2R", "Router 1", "1 Day", "1.2 GB"], ["H3WQ-9TNA", "Router 2", "1 Hour", "180 MB"], ["P8DC-5ZLE", "Router 1", "1 Week", "3.4 GB"]];
+const week = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => ({ day, value: 0 }));
 
 export default function Overview() {
+  const { routers, plans, vouchers, batches, sessions } = useStore();
+  const online = routers.filter((r) => r.status === "online").length;
+  const unused = vouchers.filter((v) => v.status === "unused").length;
+  const sold = vouchers.filter((v) => v.status === "used").length;
   return (
     <>
       <div className="row desk-top">
-        <div><h1>Overview</h1><div className="muted" style={{ fontSize: 14, marginTop: 4 }}>Sample data, today</div></div>
+        <div><h1>Overview</h1><div className="muted" style={{ fontSize: 14, marginTop: 4 }}>Today</div></div>
         <div className="row">
           <button className="iconbtn" aria-label="Notifications"><Icon name="bell" /></button>
-          <button className="btn inline">+ New voucher batch</button>
+          <Link href="/dashboard/vouchers#generate" className="btn inline" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>+ New voucher batch</Link>
         </div>
       </div>
       <div className="grid g4 stats">
-        <Stat label="Revenue today" value="₦48,500" note="+12% vs yesterday" />
-        <Stat label="Active users" value="37" note="Peak today: 52" />
-        <Stat label="Vouchers sold" value="126" note="312 unused in stock" />
-        <Stat label="Routers online" value="3 / 4" note="1 needs attention" />
+        <Stat label="Revenue today" value={money(0)} note="No sales yet" />
+        <Stat label="Active users" value={String(sessions.length)} note="Connected now" />
+        <Stat label="Vouchers sold" value={String(sold)} note={`${unused} unused in stock`} />
+        <Stat label="Routers online" value={`${online} / ${routers.length}`} note={routers.length - online === 0 ? "All routers online" : `${routers.length - online} offline`} />
       </div>
       <div className="grid g21 cards">
-        <Card title="Revenue, last 7 days" className="o-chart"><BarChart data={revenue} /></Card>
+        <Card title="Revenue, last 7 days" className="o-chart"><BarChart data={week} /></Card>
         <Card title="Routers" href="/dashboard/routers" className="o-routers">
-          <Item title="[Router name] 1" sub="[n] users" tag="Online" />
-          <Item title="[Router name] 2" sub="[n] users" tag="Online" />
-          <Item title="[Router name] 3" sub="Last seen [time]" tag="Offline" />
+          {routers.slice(0, 3).map((r) => <Item key={r.id} title={r.name} sub={r.site || r.brand} tag={r.status === "online" ? "Online" : "Offline"} />)}
+          {routers.length === 0 && <Empty>No routers yet</Empty>}
         </Card>
       </div>
       <div className="grid g21 cards">
         <Card title="Recent sessions" href="/dashboard/sessions" className="o-sessions">
-          {sessions.map(([v, r, p, d]) => <Item key={v} title={v} sub={`${r} · ${p}`} tag={d} />)}
+          {sessions.slice(0, 3).map((s) => <Item key={s.id} title={s.voucher} sub={`${s.router} · ${s.plan}`} tag={`${s.down} / ${s.up}`} />)}
+          {sessions.length === 0 && <Empty>No sessions yet</Empty>}
         </Card>
         <Card title="Vouchers" href="/dashboard/vouchers" className="o-vouchers">
-          <Item title="Unused" sub="312 codes" tag="Stock" />
-          <Item title="Batch [name]" sub="[n] vouchers" tag="[Plan]" />
-          <Item title="Batch [name]" sub="[n] vouchers" tag="[Plan]" />
+          <Item title="Unused" sub={`${unused} codes`} tag="Stock" />
+          {batches.slice(0, 2).map((b) => <Item key={b.id} title={b.name} sub={`${b.qty} vouchers`} tag={plans.find((p) => p.id === b.planId)?.name ?? "Deleted plan"} />)}
+          {batches.length === 0 && <Empty>No batches yet</Empty>}
         </Card>
       </div>
       <div className="grid g3 cards">
-        <Card title="Customers" href="/dashboard/customers" className="o-customers">{[1, 2, 3].map((i) => <Item key={i} title="[Customer name]" sub="[Phone]" tag="[Status]" />)}</Card>
-        <Card title="Agents" href="/dashboard/agents" className="o-agents">{[1, 2, 3].map((i) => <Item key={i} title="[Agent name]" sub="[Vouchers sold]" tag="[Status]" />)}</Card>
-        <Card title="Plans" href="/dashboard/plans" className="o-plans">{[1, 2, 3].map((i) => <Item key={i} title="[Plan name]" sub="[Price] · [Duration]" tag="[Speed]" />)}</Card>
+        <Card title="Customers" href="/dashboard/customers" className="o-customers"><Empty>No customers yet</Empty></Card>
+        <Card title="Agents" href="/dashboard/agents" className="o-agents"><Empty>No agents yet</Empty></Card>
+        <Card title="Plans" href="/dashboard/plans" className="o-plans">
+          {plans.slice(0, 3).map((p) => <Item key={p.id} title={p.name} sub={`${money(p.price)} · ${dur(p.duration, p.unit)}`} tag={`${p.speed} Mbps`} />)}
+          {plans.length === 0 && <Empty>No plans yet</Empty>}
+        </Card>
       </div>
     </>
   );

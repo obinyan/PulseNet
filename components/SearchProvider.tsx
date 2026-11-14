@@ -1,7 +1,8 @@
 "use client";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { search } from "@/lib/search-index";
+import { buildIndex, search } from "@/lib/search-index";
+import { useStore } from "@/lib/store";
 import { Icon } from "./icons";
 
 const Ctx = createContext<{ open: () => void }>({ open: () => {} });
@@ -12,7 +13,9 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const [q, setQ] = useState("");
   const [i, setI] = useState(0);
   const router = useRouter();
-  const results = useMemo(() => search(q), [q]);
+  const { routers, plans, vouchers, batches } = useStore();
+  const index = useMemo(() => buildIndex({ routers, plans, vouchers, batches }), [routers, plans, vouchers, batches]);
+  const results = useMemo(() => search(q, index), [q, index]);
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => {

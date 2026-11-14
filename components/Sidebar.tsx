@@ -21,7 +21,7 @@ export function Sidebar() {
       {MAIN_NAV.map(link)}
       <div className="navlabel">MANAGE</div>
       {MANAGE_NAV.map(link)}
-      <div style={{ flex: 1 }} />
+      <div style={{ flex: 1, minHeight: 56 }} />
       {link(SETTINGS_NAV)}
     </aside>
   );

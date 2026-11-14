@@ -22,7 +22,7 @@ export function Item({ title, sub, tag }: { title: string; sub: string; tag: str
   );
 }
 export function BarChart({ data }: { data: { day: string; value: number }[] }) {
-  const max = Math.max(...data.map((d) => d.value));
+  const max = Math.max(1, ...data.map((d) => d.value));
   return (
     <svg viewBox="0 0 400 180" width="100%" height="200" role="img" aria-label="Revenue per day, last 7 days">
       <defs><linearGradient id="bar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#fff" stopOpacity=".9" /><stop offset="1" stopColor="#8ea0ff" stopOpacity=".55" /></linearGradient></defs>

@@ -1,10 +1,12 @@
 import { Sidebar } from "@/components/Sidebar";
 import { SearchProvider } from "@/components/SearchProvider";
 import { MobileHeader } from "@/components/MobileHeader";
+import { StoreProvider } from "@/lib/store";
 import { MobileNav } from "@/components/MobileNav";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
+    <StoreProvider>
     <SearchProvider>
       <div className="stage">
         <div className="orb" style={{ width: 520, height: 520, left: -120, bottom: -140, background: "#3b50c8" }} />
@@ -19,5 +21,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <MobileNav />
       </div>
     </SearchProvider>
+    </StoreProvider>
   );
 }

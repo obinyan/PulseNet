@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 import { SECTIONS } from "@/lib/nav";
 
+const BUILT = ["routers", "plans", "vouchers", "sessions"];
+
 export function generateStaticParams() {
-  return SECTIONS.map((s) => ({ section: s.href.split("/").pop()! }));
+  return SECTIONS.map((s) => s.href.split("/").pop()!).filter((x) => !BUILT.includes(x)).map((section) => ({ section }));
 }
 
 export default function SectionPage({ params }: { params: { section: string } }) {
