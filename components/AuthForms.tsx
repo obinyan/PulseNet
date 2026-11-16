@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Field } from "./AuthShell";
+import { registerOperator } from "@/lib/admin-store";
 
 // Placeholder submit: real authentication is added in the next step.
 function useGoToDashboard() {
@@ -28,7 +29,14 @@ export function LoginForm() {
 }
 
 export function SignupForm() {
-  const submit = useGoToDashboard();
+  const router = useRouter();
+  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const g = (k: string) => String(fd.get(k) || "").trim();
+    if (g("business") || g("email")) registerOperator({ business: g("business"), name: g("name"), email: g("email"), phone: g("phone") });
+    router.push("/dashboard");
+  };
   return (
     <form onSubmit={submit}>
       <h2 className="auth-title">Create your Account</h2>

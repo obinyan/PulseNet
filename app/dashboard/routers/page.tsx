@@ -22,7 +22,7 @@ export default function RoutersPage() {
   const users = routers.reduce((n, r) => n + r.users, 0);
   const list = useMemo(() => routers.filter((r) => (filter === "All" || (filter === "Online") === (r.status === "online")) && `${r.name} ${r.site}`.toLowerCase().includes(q.toLowerCase())), [routers, filter, q]);
   const current = routers.find((r) => r.id === shown);
-  const cols = "1.6fr 1fr 1fr .9fr .6fr 1.1fr 1fr";
+  const cols = "1.6fr 1fr 1fr .9fr .6fr 1.1fr 1.4fr";
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,6 +59,7 @@ export default function RoutersPage() {
                 <div>{r.users}</div><div>{when(r.lastSeen)}</div>
                 <div style={{ display: "flex", gap: 10 }}>
                   <button className="linkbtn" onClick={() => { setShown(r.id); setCopied(false); }}>Script</button>
+                  <a className="linkbtn" href={`/portal/${r.id}`} target="_blank" rel="noreferrer">Login page</a>
                   <button className="linkbtn" onClick={() => { if (confirm(`Remove ${r.name}?`)) removeRouter(r.id); }}>Remove</button>
                 </div>
               </div>

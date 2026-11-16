@@ -70,6 +70,7 @@ export function Branding() {
         </Card>
       </form>
       <Card title="Live preview">
+        <p style={{ margin: "0 0 12px" }}><a className="linkbtn" href="/portal/preview" target="_blank" rel="noreferrer">Open the customer login page</a></p>
         <div className="cpreview" style={{ background: `linear-gradient(160deg, color-mix(in srgb, ${p} 40%, black), ${p})` }}>
           {d.logo ? <img src={d.logo} alt="" style={{ maxWidth: 80, maxHeight: 56, objectFit: "contain" }} /> : <div style={{ width: 56, height: 56, borderRadius: 16, background: "rgba(255,255,255,.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12 }}>Logo</div>}
           <b>{d.title || d.businessName || "Your page title"}</b>
