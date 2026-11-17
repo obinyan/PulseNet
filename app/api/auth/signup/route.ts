@@ -14,15 +14,22 @@ export async function POST(request: Request) {
     }
 
     const supabase = await createSupabaseServerClient();
+    const siteOrigin = process.env.APP_URL
+      || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : new URL(request.url).origin);
+    const callbackUrl = new URL("/auth/callback", siteOrigin);
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: new URL("/auth/callback?next=/dashboard", request.url).toString(),
+        emailRedirectTo: callbackUrl.toString(),
         data: { business_name: business, full_name: name, phone },
       },
     });
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+
+    // When confirmation is disabled, leave the newly created operator signed out
+    // so they continue through the normal login form.
+    if (data.session) await supabase.auth.signOut();
     return NextResponse.json({ confirmationRequired: !data.session });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to create account.";

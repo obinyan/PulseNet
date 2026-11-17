@@ -4,10 +4,16 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Field } from "./AuthShell";
 
-export function LoginForm({ admin = false }: { admin?: boolean }) {
+export function LoginForm({ admin = false, registered = false, confirmationRequired = false, verified = false }: { admin?: boolean; registered?: boolean; confirmationRequired?: boolean; verified?: boolean }) {
   const router = useRouter();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [message] = useState(
+    verified ? "Email confirmed. Sign in with your email and password."
+      : registered && confirmationRequired ? "Account created. Check your inbox and confirm your email before signing in."
+        : registered ? "Your account is ready. Sign in with your email and password."
+          : "",
+  );
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -35,6 +41,7 @@ export function LoginForm({ admin = false }: { admin?: boolean }) {
     <form onSubmit={submit}>
       <div className="welcome">{admin ? "PulseNet platform access" : "Welcome back to your workspace"}</div>
       <h2 className="login-title">{admin ? "Admin sign in" : "Login"}</h2>
+      {message && <p role="status" style={{ margin: "0 0 20px", fontSize: 13 }}>{message}</p>}
       <Field label="Email" name="email" type="email" required autoComplete="email" />
       <Field label="Password" name="password" password required autoComplete="current-password" />
       {error && <p className="err" role="alert">{error}</p>}
@@ -47,15 +54,14 @@ export function LoginForm({ admin = false }: { admin?: boolean }) {
 export function SignupForm() {
   const router = useRouter();
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
-    setMessage("");
     setBusy(true);
-    const form = new FormData(e.currentTarget);
+    const formElement = e.currentTarget;
+    const form = new FormData(formElement);
     try {
       const response = await fetch("/api/auth/signup", {
         method: "POST",
@@ -67,12 +73,9 @@ export function SignupForm() {
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Unable to create account.");
-      if (result.confirmationRequired) {
-        setMessage("Your account was created. Check your email to confirm it, then sign in.");
-      } else {
-        router.replace("/dashboard");
-        router.refresh();
-      }
+      formElement.reset();
+      router.replace(result.confirmationRequired ? "/login?created=1&confirm=1" : "/login?created=1");
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to create account.");
     } finally {
@@ -90,7 +93,6 @@ export function SignupForm() {
       <Field label="Password" name="password" placeholder="Create a password" password required minLength={8} autoComplete="new-password" />
       <div className="hint" style={{ margin: "-16px 0 24px" }}>Must be at least 8 characters</div>
       {error && <p className="err" role="alert">{error}</p>}
-      {message && <p role="status" style={{ margin: "0 0 16px", fontSize: 13 }}>{message}</p>}
       <button className="btn" type="submit" disabled={busy}>{busy ? "Creating account…" : "Create account"}</button>
       <div className="foot">Already have an account? <Link href="/login">Login</Link></div>
     </form>
