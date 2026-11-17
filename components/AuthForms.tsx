@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Field } from "./AuthShell";
 
-export function LoginForm({ admin = false, registered = false, confirmationRequired = false, verified = false }: { admin?: boolean; registered?: boolean; confirmationRequired?: boolean; verified?: boolean }) {
+export function LoginForm({ admin = false, registered = false, confirmationRequired = false, verified = false, notice = "" }: { admin?: boolean; registered?: boolean; confirmationRequired?: boolean; verified?: boolean; notice?: string }) {
   const router = useRouter();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -41,6 +41,7 @@ export function LoginForm({ admin = false, registered = false, confirmationRequi
     <form onSubmit={submit}>
       <div className="welcome">{admin ? "PulseNet platform access" : "Welcome back to your workspace"}</div>
       <h2 className="login-title">{admin ? "Admin sign in" : "Login"}</h2>
+      {notice && <p role="status" style={{ margin: "0 0 20px", fontSize: 13 }}>{notice}</p>}
       {message && <p role="status" style={{ margin: "0 0 20px", fontSize: 13 }}>{message}</p>}
       <Field label="Email" name="email" type="email" required autoComplete="email" />
       <Field label="Password" name="password" password required autoComplete="current-password" />

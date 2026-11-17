@@ -40,6 +40,9 @@ a{color:inherit}
 .side{width:240px;flex:none;border-radius:0;border-width:0 1px 0 0;padding:24px 16px;display:flex;flex-direction:column;gap:6px;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:10}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:24px}
 .nav{display:flex;align-items:center;gap:12px;height:44px;padding:0 14px;border-radius:14px;color:var(--soft);font:500 15px Inter,sans-serif;text-decoration:none;border:1px solid transparent}
+.signout{width:100%;background:transparent;text-align:left;cursor:pointer}
+.signout-mobile{background:transparent;border:0;color:var(--soft);cursor:pointer}
+.signout:disabled,.signout-mobile:disabled{opacity:.65;cursor:wait}
 .nav:hover{background:rgba(255,255,255,.1)}
 .nav.active{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.35)}
 .navlabel{font-size:11px;letter-spacing:.08em;color:var(--soft);margin:16px 14px 4px}

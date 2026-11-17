@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { Icon, PulseIcon } from "./icons";
 import { MAIN_NAV, MANAGE_NAV, SETTINGS_NAV } from "@/lib/nav";
 import { useSearch } from "./SearchProvider";
+import { SignOutButton } from "./SignOutButton";
 
 type Item = { label: string; href: string; icon: string };
 
@@ -23,6 +24,7 @@ export function Sidebar() {
       {MANAGE_NAV.map(link)}
       <div style={{ flex: 1, minHeight: 56 }} />
       {link(SETTINGS_NAV)}
+      <SignOutButton />
     </aside>
   );
 }

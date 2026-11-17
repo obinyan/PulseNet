@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Icon, PulseIcon } from "../icons";
+import { SignOutButton } from "../SignOutButton";
 
 const NAV = [
   { label: "Overview", href: "/admin", icon: "overview" },
@@ -26,6 +27,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           {NAV.map((n) => <Link key={n.href} href={n.href} className={`nav ${on(n.href) ? "active" : ""}`}><Icon name={n.icon} />{n.label}</Link>)}
           <div style={{ flex: 1, minHeight: 56 }} />
           <Link href="/dashboard" className="nav"><Icon name="routers" />Operator dashboard</Link>
+          <SignOutButton />
         </aside>
         <div className="content">
           <header className={`mhead ${scrolled ? "scrolled" : ""}`}>
@@ -36,6 +38,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       </div>
       <nav className="glass mnav" aria-label="Admin">
         {NAV.map((n) => <Link key={n.href} href={n.href} className={`tab ${on(n.href) ? "active" : ""}`}><Icon name={n.icon} />{n.label === "Subscription plans" ? "Plans" : n.label}</Link>)}
+        <SignOutButton variant="mobile" />
       </nav>
     </div>
   );
