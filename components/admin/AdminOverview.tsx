@@ -5,7 +5,7 @@ import { useAdmin } from "@/lib/admin-store";
 import { day, money } from "@/lib/format";
 
 export default function AdminOverview() {
-  const { operators, plans } = useAdmin();
+  const { operators, plans, ready, operatorError } = useAdmin();
   const month = new Date(); month.setDate(1); month.setHours(0, 0, 0, 0);
   const sys: [string, string][] = [["RADIUS server", "Not connected"], ["Database", "Connected to Supabase Auth"], ["Background worker", "Not connected"], ["Payment gateway", "Not connected"]];
   return (
@@ -17,10 +17,11 @@ export default function AdminOverview() {
         <Stat label="Suspended" value={String(operators.filter((o) => o.status === "suspended").length)} note="access paused" />
         <Stat label="New this month" value={String(operators.filter((o) => o.createdAt >= month.getTime()).length)} note="signed up" />
       </div>
+      {operatorError && <p className="err" role="alert">Could not load operators from Supabase: {operatorError}</p>}
       <div className="grid g21 stack" style={{ alignItems: "start" }}>
         <Card title="Recent operators" href="/admin/operators">
           {operators.slice(0, 5).map((o) => <Item key={o.id} title={o.business || o.name || o.email} sub={`${o.email || "No email"} · ${day(o.createdAt)}`} tag={o.status === "active" ? "Active" : "Suspended"} />)}
-          {operators.length === 0 && <Empty>No operators yet. They appear here when someone signs up.</Empty>}
+          {operators.length === 0 && <Empty>{ready ? "No operators yet. They appear here when someone signs up." : "Loading operators…"}</Empty>}
         </Card>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <Card title="Platform revenue"><div className="st" style={{ font: "700 26px Inter,sans-serif" }}>{money(0)}</div><div className="muted" style={{ fontSize: 13, marginTop: 4 }}>No subscriptions yet · {plans.length} {plans.length === 1 ? "plan" : "plans"} defined</div></Card>
