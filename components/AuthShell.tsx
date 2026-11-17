@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { PulseIcon } from "./icons";
 
-export function Field({ label, type = "text", placeholder = "", name, password = false }: { label: string; type?: string; placeholder?: string; name: string; password?: boolean }) {
+export function Field({ label, type = "text", placeholder = "", name, password = false, required = false, minLength, autoComplete }: { label: string; type?: string; placeholder?: string; name: string; password?: boolean; required?: boolean; minLength?: number; autoComplete?: string }) {
   return (
     <label className="field">
       <span>{label}</span>
-      {password ? <PasswordInput name={name} placeholder={placeholder} /> : <input name={name} type={type} placeholder={placeholder} />}
+      {password ? <PasswordInput name={name} placeholder={placeholder} required={required} minLength={minLength} autoComplete={autoComplete} /> : <input name={name} type={type} placeholder={placeholder} required={required} minLength={minLength} autoComplete={autoComplete} />}
     </label>
   );
 }
